@@ -2,6 +2,10 @@ import express, { Request, Response, ErrorRequestHandler } from 'express';
 import { RouteConfig } from './common/route.config';
 import { AuthRoutes } from './user/auth.routes';
 import { PostRoutes } from './post/post.routes';
+import { DB } from './db';
+
+// initialize DB
+new DB();
 
 // initialize configuration
 const app = express();
