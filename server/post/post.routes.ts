@@ -1,7 +1,11 @@
 import { Application, Request, Response } from 'express';
 import { RouteConfig } from '../common/route.config';
+import { AuthController } from '../user/auth.controller';
 import { PostController } from './post.controller';
 
+/**
+ * @desc I like to have my routes just simply handle routes. I will have all my logic inside in my controllers and have just import the middlewares.
+ */
 export class PostRoutes extends RouteConfig {
 	constructor(app: Application) {
 		super(app, 'AuthRoutes');
@@ -15,9 +19,14 @@ export class PostRoutes extends RouteConfig {
 		this.app
 			.route('/api/lists')
 			.get(
-				[PostController.listQuestions, PostController.listAnswers],
+				[
+					AuthController.isAuth,
+					PostController.listQuestions,
+					PostController.listAnswers,
+				],
 				(req: Request, res: Response) => {
-					res.status(200).json();
+					const { answer, comment, question } = res.locals;
+					res.status(200).json({ question, answer, comment });
 				}
 			);
 
@@ -25,18 +34,11 @@ export class PostRoutes extends RouteConfig {
 		 * @GET     api/postdetails
 		 * @desc    show all answers and comments for a post
 		 */
-		this.app.route('/api/postdetails').get([], (req: Request, res: Response) => {
-			res.status(200).json();
-		});
-
-		/**
-		 * @POST    api/delete
-		 * @desc    delete user
-		 */
-
-		this.app.route('/api/delete').post([], (req: Request, res: Response) => {
-			res.status(200).json();
-		});
+		this.app
+			.route('/api/postdetails')
+			.get([PostController.listAnswers], (req: Request, res: Response) => {
+				res.status(200).json();
+			});
 
 		return this.app;
 	}

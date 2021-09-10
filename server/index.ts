@@ -30,8 +30,9 @@ app.use(((err, req, res, next) => {
 		status: 500,
 		message: 'Error: Middleware error at global error handler',
 	};
-	const errorObj = Object.assign({}, defaultErr, err);
-	return res.status(errorObj.status).json(errorObj.message);
+
+	const error = Object.assign({}, defaultErr, err);
+	return res.status(error.status).json(error.message);
 }) as ErrorRequestHandler);
 
 // server

@@ -1,8 +1,6 @@
 import { createConnection } from 'typeorm';
 import { join } from 'path';
 
-import { __prod__ } from './constants';
-
 export class DB {
 	constructor() {
 		this.connect();
@@ -13,10 +11,10 @@ export class DB {
 			await createConnection({
 				type: 'postgres',
 				url: process.env.PG,
-				database: 'vstodo',
+				database: 'stackoverflow',
 				entities: [join(__dirname, './entities/*.*')],
-				logging: !__prod__,
-				synchronize: !__prod__,
+				logging: true,
+				synchronize: true,
 			});
 
 			console.log('connected to DB');

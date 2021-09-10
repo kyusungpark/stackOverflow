@@ -9,13 +9,13 @@ import {
 } from 'typeorm';
 import { User } from './User';
 
-@Entity('post')
-export class Post extends BaseEntity {
+@Entity('comment')
+export class Comment extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column('text')
-	question: string;
+	comment: string;
 
 	@Column()
 	creatorId: number;
@@ -23,7 +23,7 @@ export class Post extends BaseEntity {
 	@CreateDateColumn()
 	created_at: Date;
 
-	@ManyToOne(() => User, user => user.posts)
-	@JoinColumn({ name: 'posts_creatorId' })
+	@ManyToOne(() => User, user => user.comments)
+	@JoinColumn({ name: 'comments-creatorId' })
 	creator: Promise<User>;
 }
