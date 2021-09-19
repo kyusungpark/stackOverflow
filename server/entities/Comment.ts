@@ -7,6 +7,7 @@ import {
 	ManyToOne,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Question } from './Question';
 import { User } from './User';
 
 @Entity('comment')
@@ -15,15 +16,16 @@ export class Comment extends BaseEntity {
 	id: number;
 
 	@Column('text')
-	comment: string;
-
-	@Column()
-	creatorId: number;
+	body: string;
 
 	@CreateDateColumn()
-	created_at: Date;
+	createdAt: Date;
 
-	@ManyToOne(() => User, user => user.comments)
-	@JoinColumn({ name: 'comments-creatorId' })
-	creator: Promise<User>;
+	@ManyToOne(() => User, user => user.comment)
+	@JoinColumn({ name: 'userId' })
+	userId: Promise<User>;
+
+	@ManyToOne(() => Question, question => question.comment)
+	@JoinColumn({ name: 'questionId' })
+	questionId: string;
 }

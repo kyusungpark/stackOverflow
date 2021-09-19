@@ -7,6 +7,7 @@ import {
 	ManyToOne,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Question } from './Question';
 import { User } from './User';
 
 @Entity('answer')
@@ -15,15 +16,19 @@ export class Answer extends BaseEntity {
 	id: number;
 
 	@Column('text')
-	answer: string;
+	body: string;
 
-	@Column()
-	creatorId: number;
+	@Column('int', { default: 0 })
+	score: number;
 
 	@CreateDateColumn()
-	created_at: Date;
+	createdAt: Date;
 
-	@ManyToOne(() => User, user => user.comments)
-	@JoinColumn({ name: 'comments-creatorId' })
-	creator: Promise<User>;
+	@ManyToOne(() => User, user => user.answer)
+	@JoinColumn({ name: 'userId' })
+	userId: Promise<User>;
+
+  @ManyToOne(() => Question, question => question.answer)
+  @JoinColumn({ name: 'questionId' })
+  questionId: string;
 }

@@ -1,4 +1,8 @@
+require('dotenv-safe').config();
 import express, { Request, Response, ErrorRequestHandler } from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { RouteConfig } from './common/route.config';
 import { AuthRoutes } from './user/auth.routes';
 import { PostRoutes } from './post/post.routes';
@@ -18,6 +22,8 @@ app.use(express.json());
 const routes: Array<RouteConfig> = [];
 routes.push(new AuthRoutes(app));
 routes.push(new PostRoutes(app));
+
+app.get('/', (req, res) => res.send('Stack Overflow'));
 
 // 404
 app.use('*', (req: Request, res: Response) => {

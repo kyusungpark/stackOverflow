@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 
-import { Post } from '../entities/Post';
+import { Question } from '../entities/Question';
 import { Answer } from '../entities/Answer';
 import { handleAsync } from '../common/handleAsync';
 import { Comment } from '../entities/Comment';
@@ -10,13 +10,13 @@ import { Comment } from '../entities/Comment';
  */
 export class PostController {
 	/**
-	 * @desc lists all questions for a specifit user
+	 * @desc lists all questions/answers for a specifit user
 	 */
 	static listQuestions: RequestHandler = async (req, res, next) => {
 		const { userId } = req.body;
 
 		const [questions, error] = await handleAsync(
-			Post.find({ where: { creatorId: userId, order: { id: 'DESC' } } })
+			Question.find({ where: { userId }, order: { createdAt: 'DESC' } })
 		);
 
 		if (error) return next(error);
@@ -32,7 +32,10 @@ export class PostController {
 		const { userId } = req.body;
 
 		const [answers, error] = await handleAsync(
-			Answer.find({ where: { creatorId: userId, order: { id: 'DESC' } } })
+			Answer.find({
+				where: { userId },
+				order: { createdAt: 'DESC' },
+			})
 		);
 
 		if (error) return next(error);
@@ -48,7 +51,10 @@ export class PostController {
 		const { userId } = req.body;
 
 		const [comments, error] = await handleAsync(
-			Comment.find({ where: { creatorId: userId, order: { id: 'DESC' } } })
+			Comment.find({
+				where: { userId },
+				order: { createdAt: 'DESC' },
+			})
 		);
 
 		if (error) return next(error);
@@ -58,20 +64,20 @@ export class PostController {
 	};
 
 	/**
-	 * @desc adds a post
+	 * @desc adds a question
 	 */
-	static addPost: RequestHandler = async (req, res, next) => {
-		const { userId, question } = req.body;
+	static addQuestion: RequestHandler = async (req, res, next) => {
+		const { title, body, userId } = req.body;
 
 		const [, error] = await handleAsync(
-			Post.create({
-				question,
-				creatorId: userId,
+			Question.create({
+				title,
+				body,
+				userId,
 			}).save()
 		);
 
 		if (error) return next(error);
-		res.locals.question = question;
 
 		return next();
 	};
@@ -80,17 +86,18 @@ export class PostController {
 	 * @desc adds an answer to a post
 	 */
 	static addAnswer: RequestHandler = async (req, res, next) => {
-		const { userId, answer } = req.body;
+		const { body, userId } = req.body;
+		const { questionId } = req.params;
 
 		const [, error] = await handleAsync(
 			Answer.create({
-				answer,
-				creatorId: userId,
+				body,
+				userId,
+				questionId,
 			}).save()
 		);
 
 		if (error) return next(error);
-		res.locals.answer = answer;
 
 		return next();
 	};
@@ -99,17 +106,56 @@ export class PostController {
 	 * @desc adds an comment to a post
 	 */
 	static addComment: RequestHandler = async (req, res, next) => {
-		const { userId, comment } = req.body;
+		const { body, userId } = req.body;
+		const { questionId } = req.params;
 
 		const [, error] = await handleAsync(
 			Comment.create({
-				comment,
-				creatorId: userId,
+				body,
+				userId,
+				questionId,
 			}).save()
 		);
 
 		if (error) return next(error);
-		res.locals.comment = comment;
+
+		return next();
+	};
+
+	/**
+	 * @desc get all answers for a specific post
+	 */
+	static getQuestionAnswers: RequestHandler = async (req, res, next) => {
+		const { questionId } = req.params;
+
+		const [answers, error] = await handleAsync(
+			Answer.find({
+				where: { questionId },
+				order: { createdAt: 'DESC' },
+			})
+		);
+
+		if (error) return next(error);
+		res.locals.answers = answers;
+
+		return next();
+	};
+
+	/**
+	 * @desc get all comments for a specific post
+	 */
+	static getQuestionComments: RequestHandler = async (req, res, next) => {
+		const { questionId } = req.params;
+
+		const [comments, error] = await handleAsync(
+			Comment.find({
+				where: { questionId },
+				order: { createdAt: 'DESC' },
+			})
+		);
+
+		if (error) return next(error);
+		res.locals.comments = comments;
 
 		return next();
 	};

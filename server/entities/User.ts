@@ -5,7 +5,7 @@ import {
 	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Post } from './Post';
+import { Question } from './Question';
 import { Answer } from './Answer';
 import { Comment } from './Comment';
 
@@ -20,12 +20,12 @@ export class User extends BaseEntity {
 	@Column({ unique: true })
 	email: string;
 
-	@OneToMany(() => Post, post => post.creator)
-	posts: Promise<Post[]>;
+	@OneToMany(() => Question, question => question.userId)
+	question: Promise<Question[]>;
 
-	@OneToMany(() => Answer, answer => answer.creator)
-	answers: Promise<Answer[]>;
+	@OneToMany(() => Answer, answer => answer.userId)
+	answer: Promise<Answer[]>;
 
-	@OneToMany(() => Comment, comment => comment.creator)
-	comments: Promise<Comment[]>;
+	@OneToMany(() => Comment, comment => comment.userId)
+	comment: Promise<Comment[]>;
 }

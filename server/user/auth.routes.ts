@@ -18,7 +18,7 @@ export class AuthRoutes extends RouteConfig {
 		 */
 		this.app
 			.route('/api/signup')
-			.post([AuthController.singUp], (req: Request, res: Response) => {
+			.post([AuthController.signUp], (req: Request, res: Response) => {
 				res.status(200).json('successful signup');
 			});
 

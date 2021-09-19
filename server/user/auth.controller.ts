@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { handleAsync } from '../common/handleAsync';
 import { User } from '../entities/User';
 
-
 /**
  * @desc I like to have all my middlewares by functionality, again, I like to have structure even if it means writing few lines of code. I think this makes my routes clean and easier to read. All my logics are handle in all my controllers.
  */
@@ -19,7 +18,10 @@ export class AuthController {
 		if (!token) throw new Error('Authentication failed');
 
 		try {
-			const payload: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+			const payload: any = jwt.verify(
+				token,
+				process.env.ACCESS_TOKEN_SECRET as string
+			);
 			res.locals.userId = payload.userId;
 
 			return next();
@@ -31,7 +33,7 @@ export class AuthController {
 	/**
 	 * @desc sign up user
 	 */
-	static singUp: RequestHandler = async (req, res, next) => {
+	static signUp: RequestHandler = async (req, res, next) => {
 		const { name, email } = req.body;
 
 		const [, error] = await handleAsync(
