@@ -5,9 +5,6 @@ import { Answer } from '../entities/Answer';
 import { handleAsync } from '../common/handleAsync';
 import { Comment } from '../entities/Comment';
 
-/**
- * @desc I like to have all my middlewares by functionality, again, I like to have structure even if it means writing few lines of code. I think this makes my routes clean and easier to read. All my logics are handle in all my controllers.
- */
 export class PostController {
 	/**
 	 * @desc lists all questions/answers for a specifit user
